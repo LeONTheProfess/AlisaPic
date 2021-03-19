@@ -195,7 +195,7 @@ namespace WindowsFormsApp1
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            path1 = path1.Replace("\t", @"");
+            path1 = path1.Replace("\t", @""); 
             path1 = path1.Replace("\r", @"");
             path1 = path1.Replace("\n", @"");
             path2 = path2.Replace("\t", @"");
