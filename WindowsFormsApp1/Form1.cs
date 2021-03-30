@@ -12,7 +12,7 @@ namespace WindowsFormsApp1
         string path1 = System.IO.File.ReadAllText(@"path.txt", Encoding.Default);
         string path2 = System.IO.File.ReadAllText(@"path2.txt", Encoding.Default);
         int count = 0;
-        string copyerrors = "";
+        string copyErrors = "";
 
         void AddIndex_Copy(string[] paths, bool chekmin = false)
         {
@@ -27,12 +27,25 @@ namespace WindowsFormsApp1
                         if (fileinf.Length < 500000 && chekmin) throw new Exception("Файл меньше 500 Кб");
                         if (fileinf.Length > 6000000 && (fileinf.Extension == ".jpg" || fileinf.Extension == ".jpeg"))
                         {
-                            deliteEXIF(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
-                            fileinf = new FileInfo(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
-                            if (fileinf.Length > 6000000)
+                            if (chekmin)
                             {
-                                File.Delete(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
-                                throw new Exception("Файл больше 6 Мб");
+                                deliteEXIF(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                fileinf = new FileInfo(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                if (fileinf.Length > 6000000)
+                                {
+                                    File.Delete(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                    throw new Exception("Файл больше 6 Мб");
+                                }
+                            }
+                            else
+                            {
+                                deliteEXIF(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                fileinf = new FileInfo(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                if (fileinf.Length > 6000000)
+                                {
+                                    File.Delete(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                    throw new Exception("Файл больше 6 Мб");
+                                }
                             }
                             count++;
                         }
@@ -42,23 +55,27 @@ namespace WindowsFormsApp1
                         }
                         else
                         {
-                            File.Copy(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')), true);
+                            if(chekmin)
+                                File.Copy(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')), true);
+                            else
+                                File.Copy(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')), true);
                             count++;
                         }
                     }
                 }
                 catch(Exception ex)
                 {
-                    copyerrors += System.IO.Path.GetFileName(paths[i]) + " - " + ex.Message + '\n';
+                    copyErrors += System.IO.Path.GetFileName(paths[i]) + " - " + ex.Message + '\n';
                 }
                 if (paths[i].IndexOf('_') >= 0)
                 {
                     temp = Path.GetFileNameWithoutExtension(paths[i]);
                     string index = temp.Substring(temp.IndexOf('_') + 1);
                     if (index.Length == 4) index = index.Substring(2, 2);
-                    int Indx = Convert.ToInt32(index);
+                    
                     try
                     {
+                        int Indx = Convert.ToInt32(index);
                         FileInfo fileinf = new FileInfo(paths[i]);
                         if (fileinf.Length < 500000 && chekmin) throw new Exception("Файл меньше 500 Кб");
                         if (fileinf.Length > 6000000 && (fileinf.Extension == ".jpg" || fileinf.Extension == ".jpeg"))
@@ -148,7 +165,7 @@ namespace WindowsFormsApp1
                     catch (Exception ex)
                     {
                         string Mes = ex.Message;
-                        copyerrors += System.IO.Path.GetFileName(paths[i]) + " - " + Mes + '\n';
+                        copyErrors += System.IO.Path.GetFileName(paths[i]) + " - " + Mes + '\n';
                     }
                 }
             }
@@ -156,10 +173,10 @@ namespace WindowsFormsApp1
 
         public Form1()
         {
-
             InitializeComponent();
         }
 
+        // удаление метаданных из изображений
         private void deliteEXIF(string inPic, string outPic)
         {
             Bitmap bmp = new Bitmap(inPic);
@@ -247,10 +264,10 @@ namespace WindowsFormsApp1
                 }
 
 
-                if (copyerrors.Length > 0)
+                if (copyErrors.Length > 0)
                 {
-                    MessageBox.Show(copyerrors, "Ошибка при копировании файлов:");
-                    copyerrors = "";
+                    MessageBox.Show(copyErrors, "Ошибка при копировании файлов:");
+                    copyErrors = "";
                 }
                 if (count==1)
                     MessageBox.Show($"Загружен 1 файл");
@@ -265,6 +282,7 @@ namespace WindowsFormsApp1
             }
         }
 
+        // для новинок
         private void button4_Click(object sender, EventArgs e)
         {
             count = 0;
@@ -291,10 +309,10 @@ namespace WindowsFormsApp1
                     AddIndex_Copy(filenames);
                 }
 
-                if (copyerrors.Length > 0)
+                if (copyErrors.Length > 0)
                 {
-                    MessageBox.Show(copyerrors, "Ошибка при копировании файлов:");
-                    copyerrors="";
+                    MessageBox.Show(copyErrors, "Ошибка при копировании файлов:");
+                    copyErrors="";
                 }
                 if (count == 1)
                     MessageBox.Show($"Загружен 1 файл");
