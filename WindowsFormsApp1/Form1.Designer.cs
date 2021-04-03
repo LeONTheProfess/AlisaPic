@@ -35,7 +35,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.button4 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
@@ -49,7 +48,7 @@
             this.button1.TabIndex = 1;
             this.button1.Text = "Каталог изображений";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.button1.Click += new System.EventHandler(this.buttonSearchIndex);
             // 
             // label1
             // 
@@ -79,7 +78,7 @@
             this.button2.TabIndex = 4;
             this.button2.Text = "Каталог загрузки";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.buttonShowPath2);
             // 
             // textBox1
             // 
@@ -98,7 +97,7 @@
             this.button3.TabIndex = 6;
             this.button3.Text = "Загрузить из папки";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.buttonUploadIB);
             // 
             // button4
             // 
@@ -109,7 +108,7 @@
             this.button4.TabIndex = 7;
             this.button4.Text = "Загрузка из папки (для новинок)";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button4.Click += new System.EventHandler(this.buttonUploadIN);
             // 
             // openFileDialog1
             // 
@@ -144,7 +143,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }

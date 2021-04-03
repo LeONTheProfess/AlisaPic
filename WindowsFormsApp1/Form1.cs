@@ -9,11 +9,12 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        string path1 = System.IO.File.ReadAllText(@"path.txt", Encoding.Default);
-        string path2 = System.IO.File.ReadAllText(@"path2.txt", Encoding.Default);
+        string path1 = File.ReadAllText(@"path.txt", Encoding.Default);
+        string path2 = File.ReadAllText(@"path2.txt", Encoding.Default);
         int count = 0;
         string copyErrors = "";
 
+        // считаем, что chekmin == thue при условии, что функция вызывается из buttonUploadIB
         void AddIndex_Copy(string[] paths, bool chekmin = false)
         {
             string temp;
@@ -25,25 +26,38 @@ namespace WindowsFormsApp1
                     {
                         System.IO.FileInfo fileinf = new System.IO.FileInfo(paths[i]);
                         if (fileinf.Length < 500000 && chekmin) throw new Exception("Файл меньше 500 Кб");
-                        if (fileinf.Length > 6000000 && (fileinf.Extension == ".jpg" || fileinf.Extension == ".jpeg"))
+                        if (fileinf.Length > 6000000 && 
+                            (fileinf.Extension == ".jpg" || fileinf.Extension == ".jpeg" || fileinf.Extension == ".png"))
                         {
                             if (chekmin)
                             {
-                                deliteEXIF(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
-                                fileinf = new FileInfo(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                deliteEXIF(paths[i], path2 + 
+                                    Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
+                                fileinf = new FileInfo(path2 + 
+                                    Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                 if (fileinf.Length > 6000000)
                                 {
-                                    File.Delete(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                    File.Delete(path2 + 
+                                        Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                     throw new Exception("Файл больше 6 Мб");
                                 }
                             }
                             else
                             {
-                                deliteEXIF(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
-                                fileinf = new FileInfo(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                deliteEXIF(paths[i], path2 + 
+                                    Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
+                                fileinf = new FileInfo(path2 + 
+                                    Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                 if (fileinf.Length > 6000000)
                                 {
-                                    File.Delete(path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                    File.Delete(path2 + 
+                                        Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                     throw new Exception("Файл больше 6 Мб");
                                 }
                             }
@@ -56,16 +70,20 @@ namespace WindowsFormsApp1
                         else
                         {
                             if(chekmin)
-                                File.Copy(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')), true);
+                                File.Copy(paths[i], path2 + 
+                                    Path.GetFileNameWithoutExtension(paths[i]) + @"_IB01" + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')), true);
                             else
-                                File.Copy(paths[i], path2 + System.IO.Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')), true);
+                                File.Copy(paths[i], path2 + 
+                                    Path.GetFileNameWithoutExtension(paths[i]) + @"_IN01" + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')), true);
                             count++;
                         }
                     }
                 }
                 catch(Exception ex)
                 {
-                    copyErrors += System.IO.Path.GetFileName(paths[i]) + " - " + ex.Message + '\n';
+                    copyErrors += Path.GetFileName(paths[i]) + " - " + ex.Message + '\n';
                 }
                 if (paths[i].IndexOf('_') >= 0)
                 {
@@ -84,22 +102,31 @@ namespace WindowsFormsApp1
                             {
                                 if (Indx >= 10)
                                 {
-                                    deliteEXIF(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
-                                    fileinf = new FileInfo(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                    deliteEXIF(paths[i], path2 + 
+                                        temp.Substring(0, temp.IndexOf('_')) + @"_IB" + Convert.ToString(Indx) + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
+                                    fileinf = new FileInfo(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + Convert.ToString(Indx) + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                     if (fileinf.Length > 6000000)
                                     {
-                                        File.Delete(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                        File.Delete(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + Convert.ToString(Indx) + 
+                                            Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                         throw new Exception("Файл больше 6 Мб");
                                     }
                                     count++;
                                 }
                                 else if (Indx < 10)
                                 {
-                                    deliteEXIF(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + @"0" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
-                                    fileinf = new FileInfo(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + @"0" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                    deliteEXIF(paths[i], path2 + 
+                                        temp.Substring(0, temp.IndexOf('_')) + @"_IB" + @"0" + Convert.ToString(Indx) + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
+                                    fileinf = new FileInfo(path2 + 
+                                        temp.Substring(0, temp.IndexOf('_')) + @"_IB" + @"0" + Convert.ToString(Indx) + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                     if (fileinf.Length > 6000000)
                                     {
-                                        File.Delete(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + @"0" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                        File.Delete(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + @"0" + Convert.ToString(Indx) + 
+                                            Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                         throw new Exception("Файл больше 6 Мб");
                                     }
                                     count++;
@@ -109,22 +136,28 @@ namespace WindowsFormsApp1
                             {
                                 if (Indx >= 10)
                                 {
-                                    deliteEXIF(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
-                                    fileinf = new FileInfo(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                    deliteEXIF(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + Convert.ToString(Indx) + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
+                                    fileinf = new FileInfo(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + Convert.ToString(Indx) + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                     if (fileinf.Length > 6000000)
                                     {
-                                        File.Delete(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                        File.Delete(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + Convert.ToString(Indx) + 
+                                            Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                         throw new Exception("Файл больше 6 Мб");
                                     }
                                     count++;
                                 }
                                 else if (Indx < 10)
                                 {
-                                    deliteEXIF(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + @"0" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
-                                    fileinf = new FileInfo(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + @"0" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                    deliteEXIF(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + @"0" + Convert.ToString(Indx) + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
+                                    fileinf = new FileInfo(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + @"0" + Convert.ToString(Indx) + 
+                                        Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                     if (fileinf.Length > 6000000)
                                     {
-                                        File.Delete(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + @"0" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')));
+                                        File.Delete(path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + @"0" + Convert.ToString(Indx) + 
+                                            Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')));
                                         throw new Exception("Файл больше 6 Мб");
                                     }
                                     count++;
@@ -137,12 +170,14 @@ namespace WindowsFormsApp1
                             if (Indx >= 10)
                             {
 
-                                File.Copy(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')), true);
+                                File.Copy(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + Convert.ToString(Indx) + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')), true);
                                 count++;
                             }
                             else if (Indx < 10)
                             {
-                                File.Copy(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + @"0" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')), true);
+                                File.Copy(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IB" + @"0" + Convert.ToString(Indx) + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')), true);
                                 count++;
                             }
                         }
@@ -151,12 +186,14 @@ namespace WindowsFormsApp1
                             if (Indx >= 10)
                             {
 
-                                File.Copy(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')), true);
+                                File.Copy(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + Convert.ToString(Indx) + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')), true);
                                 count++;
                             }
                             else if (Indx < 10)
                             {
-                                File.Copy(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + @"0" + Convert.ToString(Indx) + System.IO.Path.GetFileName(paths[i]).Substring(System.IO.Path.GetFileName(paths[i]).IndexOf('.')), true);
+                                File.Copy(paths[i], path2 + temp.Substring(0, temp.IndexOf('_')) + @"_IN" + @"0" + Convert.ToString(Indx) + 
+                                    Path.GetFileName(paths[i]).Substring(Path.GetFileName(paths[i]).IndexOf('.')), true);
                                 count++;
                             }
                         }
@@ -165,7 +202,7 @@ namespace WindowsFormsApp1
                     catch (Exception ex)
                     {
                         string Mes = ex.Message;
-                        copyErrors += System.IO.Path.GetFileName(paths[i]) + " - " + Mes + '\n';
+                        copyErrors += Path.GetFileName(paths[i]) + " - " + Mes + '\n';
                     }
                 }
             }
@@ -194,7 +231,7 @@ namespace WindowsFormsApp1
             bmp.Save(outPic);
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void buttonSearchIndex(object sender, EventArgs e)
         {
             try
             {
@@ -212,6 +249,7 @@ namespace WindowsFormsApp1
 
         private void Form1_Shown(object sender, EventArgs e)
         {
+            // нормализация путей
             path1 = path1.Replace("\t", @""); 
             path1 = path1.Replace("\r", @"");
             path1 = path1.Replace("\n", @"");
@@ -232,26 +270,17 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonShowPath2(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("explorer", path2);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        // выгрузка в path2 с удалением exif 
+        private void buttonUploadIB(object sender, EventArgs e)
         {
             count = 0;
             try
             {
-                //folderBrowserDialog1.ShowDialog();
-                //string DownloadPath = path1;
-                //string[] files_jpg = Directory.GetFiles(DownloadPath, "*.jpg", SearchOption.AllDirectories);
-                //string[] files_png = Directory.GetFiles(DownloadPath, "*.png", SearchOption.AllDirectories);
-                //string[] files_jpeg = Directory.GetFiles(DownloadPath, "*.jpeg", SearchOption.AllDirectories);
-                //if (files_jpg.Length == 0 && files_png.Length == 0) throw new Exception("Не найдено ни одного изображения");
-                //AddIndex_Copy(files_jpg);
-                //AddIndex_Copy(files_png);
-                //AddIndex_Copy(files_jpeg);
-
                 openFileDialog1.Multiselect = true;
                 openFileDialog1.FileName = "";
                 openFileDialog1.Filter = "Изображения|*.jpg;*.jpeg;*.png";
@@ -283,21 +312,11 @@ namespace WindowsFormsApp1
         }
 
         // для новинок
-        private void button4_Click(object sender, EventArgs e)
+        private void buttonUploadIN(object sender, EventArgs e)
         {
             count = 0;
             try
             {
-                //folderBrowserDialog1.ShowDialog();
-                //string DownloadPath = folderBrowserDialog1.SelectedPath;
-                //string[] files_jpg = Directory.GetFiles(DownloadPath, "*.jpg", SearchOption.AllDirectories);
-                //string[] files_png = Directory.GetFiles(DownloadPath, "*.png", SearchOption.AllDirectories);
-                //string[] files_jpeg = Directory.GetFiles(DownloadPath, "*.jpeg", SearchOption.AllDirectories);
-                //if (files_jpg.Length == 0 && files_png.Length == 0) throw new Exception("Не найдено ни одного изображения");
-                //AddIndex_Copy_New(files_jpg);
-                //AddIndex_Copy_New(files_png);
-                //AddIndex_Copy_New(files_jpeg);
-
                 openFileDialog1.Multiselect = true;
                 openFileDialog1.Filter = "Изображения|*.jpg;*.jpeg;*.png";
                 openFileDialog1.FileName = "";
